@@ -40,3 +40,7 @@ demonstrates how to use parameters with multiple types.
 Both examples will print an environment of all available commands when called
 with '--help'.
 
+Testing
+=======
+go test github.com/BurntSushi/gribble
+
