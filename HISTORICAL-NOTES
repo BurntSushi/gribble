@@ -1,3 +1,13 @@
+These were notes that I wrote before writing any code for Gribble. This is
+in the repository for historical purposes only. Although the general gist
+of Gribble is the same as what's described here, there are several key
+differences. (The most prominent one is a decoupling between command 
+definitions and sub-commands.)
+
+================================================================================
+================================================================================
+================================================================================
+
 Some very preliminary notes on Gribble so I can get them out of my head.
 
 Goal
