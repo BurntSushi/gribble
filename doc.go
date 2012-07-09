@@ -4,7 +4,7 @@ commands is defined by Go structs via reflection. The primary use case for
 Gribble is to provide an easy to use command language for users to interact 
 with your program.
 
-For example, to defined an environment with an "Add" command that adds two 
+For example, to define an environment with an "Add" command that adds two 
 operators and print the output of the command "Add (Add 1 2) 42":
 
 	package main
