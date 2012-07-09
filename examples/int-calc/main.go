@@ -1,6 +1,6 @@
-// Example int-calc demonstrates an extremely simple usage scenario for Gribble.
-// Namely, int-calc is an integer calculator that supports only basic
-// arithmetic operations.
+// Example int-calc demonstrates a simple integer calculator with
+// commands defined using Gribble. It supports basic arithmetic operations
+// on integers.
 package main
 
 import (
