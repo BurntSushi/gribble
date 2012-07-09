@@ -152,6 +152,15 @@ func (p *gparam) loadEmptyInterfaceTypes() {
 				"invalid type '%s'. Valid types are int, float and string.",
 				p.cmdStruct.name, p.Name, t)
 		}
+
+		// Make sure this type hasn't already been added.
+		for _, texist := range p.validTypes {
+			if t == texist {
+				panicf("In command '%s', parameter '%s' has listed the "+
+					"'%s' type more than once.",
+					p.cmdStruct.name, p.Name, t)
+			}
+		}
 		p.validTypes = append(p.validTypes, t)
 	}
 	switch len(p.validTypes) {
