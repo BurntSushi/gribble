@@ -23,9 +23,10 @@ The output should be '17'.
 
 Documentation
 =============
-gopkgdoc is well-suited to provide documentation for Gribble.
+gopkgdoc is well-suited to provide documentation for Gribble:
+http://go.pkgdoc.org/github.com/BurntSushi/gribble
 
-With that said, documentation is also hosted here: 
+Documentation is also hosted here: 
 http://godoc.burntsushi.net/pkg/github.com/BurntSushi/gribble/
 
 Examples
