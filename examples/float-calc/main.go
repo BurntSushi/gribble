@@ -1,5 +1,5 @@
 // Example float-calc demonstrates an extremely simple usage scenario for
-// Gribble.Namely, float-calc is a floating point calculator that supports only 
+// Gribble. Namely, float-calc is a floating point calculator that supports only 
 // basic arithmetic operations on both integers and floating point numbers.
 //
 // The key point of interest in this example is to show how parameters can
