@@ -82,6 +82,19 @@ type 'int' or 'float64' by returning an error if a type not specified in the
 Currently, the only types allowed in the 'types' struct tag are int, float and 
 string.
 
+Command names
+
+Command names must be Go identifiers and are automatically set to the name of
+the struct. Alternatively, the name can be overridden by adding a 'name' field
+with the desired name in the struct tag:
+
+type ThisIsNotTheName struct {
+	name string `TheName`
+	Op int `param:"1"`
+}
+
+Where the command is invoked using 'TheName'.
+
 Errors
 
 Gribble will panic when any of the invariants involved in defining commands are 
