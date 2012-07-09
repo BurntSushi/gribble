@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/BurntSushi/wingo/gribble"
+	"github.com/BurntSushi/gribble"
 )
 
 var env *gribble.Environment = gribble.New([]gribble.Command{
