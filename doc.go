@@ -88,10 +88,10 @@ Command names must be Go identifiers and are automatically set to the name of
 the struct. Alternatively, the name can be overridden by adding a 'name' field
 with the desired name in the struct tag:
 
-type ThisIsNotTheName struct {
-	name string `TheName`
-	Op int `param:"1"`
-}
+	type ThisIsNotTheName struct {
+		name string `TheName`
+		Op int `param:"1"`
+	}
 
 Where the command is invoked using 'TheName'.
 
