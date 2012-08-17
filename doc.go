@@ -132,7 +132,7 @@ Quick example
 
 To demonstrate the bundled integer calculator:
 
-	go get github
+	go get github.com/BurntSushi/gribble
 	GO/PATH/bin/int-calc 'add 5 (mul 2 6)'
 
 The output should be '17'.
