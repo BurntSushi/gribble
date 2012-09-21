@@ -144,7 +144,7 @@ func (p *parser) params() []Value {
 			tok = p.tok
 			continue
 		case scanner.String:
-			params = append(params, p.TokenText())
+			params = append(params, strings.Trim(p.TokenText(), "\""))
 		case scanner.Int:
 			if n, err := strconv.ParseInt(p.TokenText(), 0, 32); err != nil {
 				p.parseError("integer")
