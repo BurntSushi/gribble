@@ -123,6 +123,19 @@ func (env *Environment) Command(cmd string) (Command, error) {
 	return filledCommand, nil
 }
 
+// Check attempts to parse a command and look it up in the environment.
+// If either fails, an error is returned.
+func (env *Environment) Check(cmd string) error {
+	parsed, err := parse(cmd, false)
+	if err != nil {
+		return err
+	}
+	if env.findCommand(parsed) == nil {
+		return e("Command '%s' does not exist.", parsed.name)
+	}
+	return nil
+}
+
 // CommandName is a convenience method for returning the name of the command
 // used in the command string 'cmd'. The important aspect of this method is that
 // it is impervious to most kinds of errors, including parse errors (so long
