@@ -1,0 +1,3 @@
+tags:
+	gotags *.go > TAGS
+
