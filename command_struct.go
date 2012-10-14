@@ -64,7 +64,7 @@ func cmdHelp(val reflect.Value) string {
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
 		tag := string(field.Tag)
-		if field.Name == "help" && field.Type.Kind() == reflect.String {
+		if field.Name == "Help" && field.Type.Kind() == reflect.String {
 			return strings.TrimSpace(tag)
 		}
 	}
