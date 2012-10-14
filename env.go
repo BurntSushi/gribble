@@ -61,6 +61,17 @@ func (env *Environment) Run(cmd string) (Value, error) {
 	return command.Run(), nil
 }
 
+func (env *Environment) RunMany(cmds string) (Value, error) {
+	commands, err := env.Commands(cmds)
+	if err != nil {
+		return nil, err
+	}
+	for _, command := range commands[0:len(commands)-1] {
+		command.Run()
+	}
+	return commands[len(commands)-1].Run(), nil
+}
+
 // Command returns a value implementing the Command interface that is ready to
 // be executed. In particular, the concrete struct underlying the Command
 // interface has had its values filled with literals specified in the "cmd"
@@ -123,15 +134,34 @@ func (env *Environment) Command(cmd string) (Command, error) {
 	return filledCommand, nil
 }
 
+func (env *Environment) Commands(cmds string) ([]Command, error) {
+	parsedCmds, err := parseMany(cmds, env.Verbose)
+	if err != nil {
+		return nil, err
+	}
+
+	filledCommands := make([]Command, 0)
+	for _, parsedCmd := range parsedCmds {
+		filledCommand, err := newCommand(env, parsedCmd)
+		if err != nil {
+			return nil, err
+		}
+		filledCommands = append(filledCommands, filledCommand)
+	}
+	return filledCommands, nil
+}
+
 // Check attempts to parse a command and look it up in the environment.
 // If either fails, an error is returned.
 func (env *Environment) Check(cmd string) error {
-	parsed, err := parse(cmd, false)
+	parsed, err := parseMany(cmd, false)
 	if err != nil {
 		return err
 	}
-	if env.findCommand(parsed) == nil {
-		return e("Command '%s' does not exist.", parsed.name)
+	for _, cmd := range parsed {
+		if env.findCommand(cmd) == nil {
+			return e("Command '%s' does not exist.", cmd.name)
+		}
 	}
 	return nil
 }
@@ -153,6 +183,17 @@ func (env *Environment) findCommand(parsedCmd *command) *commandStruct {
 		return cmd
 	}
 	return nil
+}
+
+// Help returns the help message (if one exists) in a command struct.
+// Help messages are located in the struct tag of a 'help' field with
+// type string.
+func (env *Environment) Help(cmdName string) string {
+	cmdStruct, ok := env.commands[cmdName]
+	if !ok {
+		return fmt.Sprintf("No such command '%s'.", cmdName)
+	}
+	return cmdStruct.help
 }
 
 // Usage returns a usage string derived from the command struct, including
@@ -210,4 +251,11 @@ func (env *Environment) StringTypes() string {
 	}
 	sort.Sort(sort.StringSlice(cmds))
 	return strings.Join(cmds, "\n")
+}
+
+// Each calls 'f' on each command in the environment.
+func (env *Environment) Each(f func(name, help string)) {
+	for _, cmdStruct := range env.commands {
+		f(cmdStruct.name, cmdStruct.help)
+	}
 }

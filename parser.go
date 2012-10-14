@@ -63,7 +63,7 @@ func parse(invocation string, verbose bool) (*command, error) {
 	}
 
 	p := newParser(invocation, verbose)
-	cmd := p.command()
+	cmd := p.command(p.Scan())
 	if len(p.errors) == 0 && p.tok != scanner.EOF {
 		p.parseError("EOF")
 	}
@@ -75,6 +75,32 @@ func parse(invocation string, verbose bool) (*command, error) {
 		return cmd, e(strings.Join(reterrs, "\n"))
 	}
 	return cmd, nil
+}
+
+// parseMany takes multiple command invocations in a single string and returns 
+// a command value for each command.
+// Note that even when an error is returned, the command
+// value is also returned since parsing doesn't stop on an error.
+func parseMany(invocation string, verbose bool) ([]*command, error) {
+	if len(strings.TrimSpace(invocation)) == 0 {
+		return nil, fmt.Errorf("Empty strings are not valid commands.")
+	}
+
+	p := newParser(invocation, verbose)
+
+	cmds := make([]*command, 0)
+	p.Scan()
+	for len(p.errors) == 0 && p.tok != scanner.EOF {
+		cmds = append(cmds, p.command(p.tok))
+	}
+	if len(p.errors) > 0 {
+		reterrs := make([]string, len(p.errors))
+		for i, err := range p.errors {
+			reterrs[i] = err.Error()
+		}
+		return cmds, e(strings.Join(reterrs, "\n"))
+	}
+	return cmds, nil
 }
 
 // newParser is a parser constructor and also initializes the Scanner.
@@ -101,7 +127,7 @@ func (p *parser) Scan() rune {
 
 // demands checks the current token for equality with 'c'. If they are equal,
 // the scanner progresses unhindered. Otherwise, an error is logged and the
-// scanner still progressed.
+// scanner still progresses.
 func (p *parser) demands(c rune) {
 	if p.tok != c {
 		p.parseError(string([]rune{c}))
@@ -112,10 +138,10 @@ func (p *parser) demands(c rune) {
 // command parses a command invocation. It can handle arbitrarily nested
 // parantheses. An error is logged when something other than a scanner.Ident
 // or a '(' is found.
-func (p *parser) command() *command {
-	switch tok := p.Scan(); tok {
+func (p *parser) command(tok rune) *command {
+	switch tok {
 	case '(':
-		cmd := p.command()
+		cmd := p.command(p.Scan())
 		p.demands(')')
 		return cmd
 	case scanner.Ident:
@@ -139,7 +165,7 @@ func (p *parser) params() []Value {
 	for tok != scanner.EOF {
 		switch tok {
 		case '(':
-			params = append(params, p.command())
+			params = append(params, p.command(p.Scan()))
 			p.demands(')')
 			tok = p.tok
 			continue

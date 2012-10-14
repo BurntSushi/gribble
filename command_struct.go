@@ -3,6 +3,7 @@ package gribble
 import (
 	"go/token"
 	"reflect"
+	"strings"
 )
 
 // commandStruct embeds a reflect.Value of a Command interface's concrete
@@ -12,6 +13,7 @@ import (
 type commandStruct struct {
 	reflect.Value
 	name   string
+	help   string
 	params []*gparam
 }
 
@@ -28,6 +30,7 @@ func newCommandStruct(cmd Command) *commandStruct {
 	cmdStruct := &commandStruct{
 		Value: concreteCmd,
 		name:  cmdName(concreteCmd),
+		help:  cmdHelp(concreteCmd),
 	}
 	cmdStruct.params = paramFields(cmdStruct)
 	return cmdStruct
@@ -50,6 +53,22 @@ func cmdName(val reflect.Value) string {
 		}
 	}
 	return typ.Name()
+}
+
+// cmdHelp searches for a 'Help' member of a struct, and if it exists,
+// returns its struct tag trimmed. If no such member exists, or doesn't have
+// a struct tag, an empty string is returned.
+func cmdHelp(val reflect.Value) string {
+	mustBeStruct(val)
+	typ := val.Type()
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		tag := string(field.Tag)
+		if field.Name == "help" && field.Type.Kind() == reflect.String {
+			return strings.TrimSpace(tag)
+		}
+	}
+	return ""
 }
 
 // paramFields returns a list of all parameters for the given command struct

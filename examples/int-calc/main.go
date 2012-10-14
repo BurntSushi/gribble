@@ -88,7 +88,7 @@ func main() {
 	flag.Parse()
 	cmd := strings.Join(flag.Args(), " ")
 
-	val, err := env.Run(cmd)
+	val, err := env.RunMany(cmd)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 
