@@ -82,7 +82,7 @@ func TestNonContiguousParams(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badNonContiguousParams{}})
-	t.Fatalf("Gribble did not panic when given a command with two parameters "+
+	t.Fatalf("Gribble did not panic when given a command with two parameters " +
 		"numbered '1' and '3' consecutively.")
 }
 
@@ -114,7 +114,7 @@ func TestBadInterface(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badInterface{}})
-	t.Fatalf("Gribble did not panic when given a parameter with type "+
+	t.Fatalf("Gribble did not panic when given a parameter with type " +
 		"'interface{}'.")
 }
 
@@ -132,7 +132,7 @@ func TestBadNumberOfTypes(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badNumberOfTypes{}})
-	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' "+
+	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' " +
 		"that has only specified a single type in the 'types' struct tag.")
 }
 
@@ -149,7 +149,7 @@ func TestBadAnyTypes(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badAnyTypes{}})
-	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' "+
+	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' " +
 		"that has an invalid type 'uint' in the 'types' struct tag.")
 }
 
@@ -166,7 +166,7 @@ func TestBadRepeatedTypes(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badRepeatedTypes{}})
-	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' "+
+	t.Fatalf("Gribble did not panic when given a parameter with type 'Any' " +
 		"that has repeated the 'int' type in the 'types' struct tag.")
 }
 
@@ -183,8 +183,7 @@ func TestBadReturnValue(t *testing.T) {
 		recover()
 	}()
 	New([]Command{badReturnValue{}}).Run("badReturnValue (badReturnValue 0)")
-	t.Fatalf("Gribble did not panic when a sub-command returned a value "+
-		"with type 'bool', which is not one of the allowed return types: "+
+	t.Fatalf("Gribble did not panic when a sub-command returned a value " +
+		"with type 'bool', which is not one of the allowed return types: " +
 		"int, float64 or string.")
 }
-
