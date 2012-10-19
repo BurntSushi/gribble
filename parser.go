@@ -20,6 +20,7 @@ type parser struct {
 	verbose  bool
 	tok      rune
 	tokText  string
+	negative bool // whether the last token was a '-'
 	errors   []error
 }
 
@@ -122,6 +123,10 @@ func newParser(invocation string, verbose bool) *parser {
 func (p *parser) Scan() rune {
 	r := p.Scanner.Scan()
 	p.tok, p.tokText = r, p.TokenText()
+	if r == '-' {
+		p.negative = !p.negative
+		return p.Scan()
+	}
 	return r
 }
 
@@ -176,17 +181,28 @@ func (p *parser) params() []Value {
 				p.parseError("integer")
 				params = append(params, nil)
 			} else {
-				params = append(params, int(n))
+				if p.negative {
+					params = append(params, -int(n))
+					p.negative = false
+				} else {
+					params = append(params, int(n))
+				}
 			}
 		case scanner.Float:
 			if n, err := strconv.ParseFloat(p.TokenText(), 64); err != nil {
 				p.parseError("float")
 				params = append(params, nil)
 			} else {
-				params = append(params, float64(n))
+				if p.negative {
+					params = append(params, -float64(n))
+					p.negative = false
+				} else {
+					params = append(params, float64(n))
+				}
 			}
 		case ')':
 			return params
+		case '-':
 		default:
 			p.parseError("parameter")
 		}
