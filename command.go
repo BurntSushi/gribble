@@ -133,7 +133,14 @@ func fillParam(typeError func() error,
 		// the way we "fill" parameter values. Alternatively, this could be
 		// reached if the user violates the invariant that a command can only
 		// return an int, float64 or a string.
-		panic(typeError())
+
+		// Actually, it is valid for a command to return nil.
+		// (But we still log a type error.)
+		if paramVal == nil {
+			return typeError()
+		} else {
+			panic(typeError())
+		}
 	}
 
 	return nil
