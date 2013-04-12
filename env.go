@@ -215,6 +215,44 @@ func (env *Environment) UsageTypes(cmdName string) string {
 		})
 }
 
+// ArgTypes returns a list of valid argument types for the command given.
+// Each argument may have more than one valid type. The possible types
+// are "int", "float" or "string".
+// The first argument's types are found at index 0, the second at index 1,
+// and so on.
+//
+// This function panics if it's given a command name that doesn't exist.
+func (env *Environment) ArgTypes(cmdName string) [][]string {
+	cmdStruct, ok := env.commands[cmdName]
+	if !ok {
+		panic(fmt.Sprintf("No such command '%s'.", cmdName))
+	}
+
+	argTypes := make([][]string, len(cmdStruct.params))
+	for i, field := range cmdStruct.params {
+		argTypes[i] = make([]string, len(field.validTypes))
+		copy(argTypes[i], field.validTypes)
+	}
+	return argTypes
+}
+
+// ArgNames returns a list of names for the arguments of a command.
+// (These correspond to the names of the struct members.)
+//
+// This function panics if it's given a command name that doesn't exist.
+func (env *Environment) ArgNames(cmdName string) []string {
+	cmdStruct, ok := env.commands[cmdName]
+	if !ok {
+		panic(fmt.Sprintf("No such command '%s'.", cmdName))
+	}
+
+	names := make([]string, len(cmdStruct.params))
+	for i, field := range cmdStruct.params {
+		names[i] = field.Name
+	}
+	return names
+}
+
 // usage generates a usage message with a field transformation function
 // 'fieldTrans' applied to each parameter field.
 func (env *Environment) usage(cmdName string,
