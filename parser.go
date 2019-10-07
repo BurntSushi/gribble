@@ -174,7 +174,7 @@ func (p *parser) params() []Value {
 			p.demands(')')
 			tok = p.tok
 			continue
-		case scanner.String:
+		case scanner.String, scanner.RawString:
 			params = append(params, strings.Trim(p.TokenText(), "\"`"))
 		case scanner.Int:
 			if n, err := strconv.ParseInt(p.TokenText(), 0, 32); err != nil {
